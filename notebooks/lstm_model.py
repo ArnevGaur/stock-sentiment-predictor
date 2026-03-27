@@ -80,8 +80,8 @@ if __name__ == "__main__":
 
     # ── Save model ────────────────────────────────
     os.makedirs("models", exist_ok=True)
-    model.save("models/lstm_model.keras")
-    print("✅ Model saved to models/lstm_model.keras")
+    model.save("models/lstm_model.h5")
+    print("✅ Model saved to models/lstm_model.h5")
 
     # ── Loss curve ────────────────────────────────
     plt.figure(figsize=(8, 4))
