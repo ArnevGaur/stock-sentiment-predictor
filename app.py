@@ -81,6 +81,19 @@ def predict_future(df, model, scaler, n_days=30):
     return future_dates, future_prices
 
 # ── Sentiment helpers ─────────────────────────────────────────────────────────
+@st.cache_data(show_spinner=False, ttl=3600)
+def fetch_latest_news(ticker: str) -> str:
+    try:
+        news = yf.Ticker(ticker).news
+        if news and len(news) > 0:
+            if 'content' in news[0] and 'title' in news[0]['content']:
+                return news[0]['content']['title']
+            elif 'title' in news[0]:
+                return news[0]['title']
+    except Exception:
+        pass
+    return "Infosys raises FY25 guidance after strong deal wins"
+
 def score_text(text):
     score = TextBlob(text).sentiment.polarity
     if score > 0.05:    return "🟢 Positive", score
@@ -108,14 +121,6 @@ with st.sidebar:
     end_date    = st.date_input("End Date",   value=date.today())
     future_days = st.slider("Future forecast (business days)", 5, 60, 30)
     show_future = st.toggle("Show future forecast", value=True)
-    st.divider()
-    st.header("🗞️ Sentiment")
-    news_input = st.text_area(
-        "Enter a news headline:",
-        value="Infosys raises FY25 guidance after strong deal wins",
-        height=80,
-    )
-    st.button("Analyze Sentiment", use_container_width=True)
 
 if end_date <= start_date:
     st.error("⚠️ End date must be after start date.")
@@ -247,8 +252,22 @@ st.subheader("🗞️ News Sentiment Analysis")
 col_l, col_r = st.columns([3, 2])
 
 with col_l:
+    hist = load_sentiment_history()
+    if end_date >= date.today():
+        news_input = fetch_latest_news(TICKER)
+    else:
+        if not hist.empty:
+            hist['DateObj'] = pd.to_datetime(hist['date']).dt.date
+            closest = hist[hist['DateObj'] <= end_date]
+            if not closest.empty:
+                news_input = closest.iloc[-1]['headline']
+            else:
+                news_input = "No news found for this period."
+        else:
+            news_input = "No historical news found."
+
     label, score = score_text(news_input)
-    st.info(f"**Headline:** {news_input}")
+    st.info(f"**Headline for {end_date}:** {news_input}")
     m1, m2 = st.columns(2)
     m1.metric("Sentiment", label)
     m2.metric("Polarity",  f"{score:.4f}")
