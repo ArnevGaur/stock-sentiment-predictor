@@ -1,0 +1,16 @@
+date,headline,polarity,subjectivity,sentiment
+2020-01-01,Infosys reports strong quarterly earnings beating estimates,0.4333,0.7333,Positive
+2020-01-02,Infosys wins major cloud deal with European client,0.1208,0.2333,Positive
+2020-01-03,Infosys faces pressure as rupee strengthens against dollar,0.0,0.0,Neutral
+2020-01-06,Infosys CEO confident about growth outlook for 2020,0.5,0.8333,Positive
+2020-01-07,Infosys stock falls amid global market uncertainty,0.0,0.0,Neutral
+2020-03-15,Infosys warns of slowdown due to COVID-19 pandemic impact,-0.125,0.375,Negative
+2020-06-01,Infosys raises revenue guidance on strong deal wins,0.3667,0.4667,Positive
+2021-01-13,Infosys Q3 results exceed expectations profit surges,0.0,0.0,Neutral
+2021-07-14,Infosys raises FY22 revenue growth guidance to 14-16 percent,0.0,0.0,Neutral
+2022-01-12,Infosys reports highest ever quarterly revenue in Q3,0.0,0.0,Neutral
+2022-04-13,Infosys misses revenue estimates stock drops sharply,-0.125,0.75,Negative
+2023-01-11,Infosys cautious on outlook citing weak demand from clients,-0.375,0.625,Negative
+2023-07-20,Infosys cuts FY24 revenue growth forecast amid slowdown,0.0,0.0,Neutral
+2024-01-11,Infosys raises guidance after strong deal pipeline growth,0.4333,0.7333,Positive
+2024-07-18,Infosys beats Q1 estimates raises annual revenue forecast,0.0,0.0,Neutral
