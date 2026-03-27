@@ -1,8 +1,10 @@
 import pandas as pd
 from textblob import TextBlob
 import os
+from config import SENTIMENT_PATH, DATA_DIR
 
-# ── Sample Headlines (in real world, use NewsAPI or RSS feeds) ────────────
+# ── Sample Headlines ──────────────────────────────────────────────────────────
+# In production replace with a NewsAPI / RSS feed call.
 HEADLINES = [
     {"date": "2020-01-01", "headline": "Infosys reports strong quarterly earnings beating estimates"},
     {"date": "2020-01-02", "headline": "Infosys wins major cloud deal with European client"},
@@ -21,35 +23,34 @@ HEADLINES = [
     {"date": "2024-07-18", "headline": "Infosys beats Q1 estimates raises annual revenue forecast"},
 ]
 
-# ── Sentiment Scoring ──────────────────────────────────────────────────────
 def analyze_sentiment(headlines):
     results = []
     for item in headlines:
-        blob = TextBlob(item['headline'])
-        polarity    = blob.sentiment.polarity       # -1 (negative) to +1 (positive)
-        subjectivity = blob.sentiment.subjectivity  #  0 (objective) to  1 (subjective)
-        sentiment_label = (
-            "Positive" if polarity > 0 else
-            "Negative" if polarity < 0 else
+        blob         = TextBlob(item['headline'])
+        polarity     = blob.sentiment.polarity
+        subjectivity = blob.sentiment.subjectivity
+        label = (
+            "Positive" if polarity >  0.05 else
+            "Negative" if polarity < -0.05 else
             "Neutral"
         )
         results.append({
-            "date":             item['date'],
-            "headline":         item['headline'],
-            "polarity":         round(polarity, 4),
-            "subjectivity":     round(subjectivity, 4),
-            "sentiment":        sentiment_label
+            "date":         item['date'],
+            "headline":     item['headline'],
+            "polarity":     round(polarity, 4),
+            "subjectivity": round(subjectivity, 4),
+            "sentiment":    label,
         })
     return pd.DataFrame(results)
 
 if __name__ == "__main__":
     df = analyze_sentiment(HEADLINES)
-    os.makedirs("data", exist_ok=True)
-    df.to_csv("data/sentiment_scores.csv", index=False)
+    os.makedirs(DATA_DIR, exist_ok=True)
+    df.to_csv(SENTIMENT_PATH, index=False)
 
     print("✅ Sentiment analysis complete!")
-    print(f"   Positive: {len(df[df['sentiment']=='Positive'])}")
-    print(f"   Negative: {len(df[df['sentiment']=='Negative'])}")
-    print(f"   Neutral:  {len(df[df['sentiment']=='Neutral'])}")
+    print(f"   Positive : {len(df[df['sentiment'] == 'Positive'])}")
+    print(f"   Negative : {len(df[df['sentiment'] == 'Negative'])}")
+    print(f"   Neutral  : {len(df[df['sentiment'] == 'Neutral'])}")
     print("\n📊 Sample output:")
-    print(df[['date','sentiment','polarity','headline']].to_string(index=False))
+    print(df[['date', 'sentiment', 'polarity', 'headline']].to_string(index=False))
